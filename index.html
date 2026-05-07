@@ -198,6 +198,7 @@ footer .f-logo em{color:var(--red);font-style:normal}
 <script>
 const lang={current:'de'};
 const imgStore={};
+const imgBase='https://raw.githubusercontent.com/fengyinchayu/pinkitchenfreiburg/main/images/';
 
 const categories=[
   {id:'starters',cat:'starters',de:'Vorspeisen',en:'Starters',zh:'前菜',dishes:[
@@ -318,13 +319,14 @@ function renderMenu(){
       <div class="dishes-grid">`;
     filtered.forEach((d,i)=>{
       const id=cardId(cat.id,cat.dishes.indexOf(d));
-      const imgSrc=imgStore[id]||'';
+      const imgSrc=imgStore[id]||`${imgBase}${d.num.split('/')[0]}.jpg`;
       const desc=d.desc[l]||d.desc.de||'';
       const vegT=d.veg?`<span class="tag tag-veg">${l==='zh'?'素食':'Veg'}</span>`:'';
       const algT=d.allergens?`<span class="tag tag-allergen">${d.allergens}</span>`:'';
       html+=`<div class="dish-card">
         <div class="dish-img" onclick="triggerUpload('${id}')">
-          ${imgSrc?`<img src="${imgSrc}" alt="${d.zh}">`:`<div class="dish-img-placeholder"><div class="img-icon">⊕</div><div class="img-text">${l==='de'?'Foto hinzufügen':l==='en'?'Add photo':'添加照片'}</div></div>`}
+          ${imgSrc?`<img src="${imgSrc}" alt="${d.zh}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:''}
+          <div class="dish-img-placeholder" style="${imgSrc?'display:none':''}"><div class="img-icon">⊕</div><div class="img-text">${l==='de'?'Foto folgt':l==='en'?'Photo coming':'图片即将上传'}</div></div>
           <div class="upload-hint">${l==='de'?'Foto hochladen':l==='en'?'Upload photo':'上传照片'}</div>
           <input type="file" accept="image/*" id="file_${id}" style="display:none" onchange="handleUpload(event,'${id}')">
         </div>
