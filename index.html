@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIN（品）Kitchen</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--red:#e03030;--red2:#ff4444;--bg:#0e0e0e;--bg2:#161616;--bg3:#1e1e1e;--text:#f0ece4;--muted:#888;--border:#2a2a2a;--gold:#c8a96e}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.6}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(14,14,14,0.96);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;backdrop-filter:blur(8px)}
+.nav-logo{font-size:1.15rem;letter-spacing:0.12em;color:var(--text)}
+.nav-logo em{color:var(--red);font-style:normal}
+.lang-toggle{display:flex;gap:4px}
+.lang-btn{background:none;border:1px solid var(--border);padding:4px 12px;font-size:12px;cursor:pointer;border-radius:2px;color:var(--muted);font-family:inherit;letter-spacing:0.05em;transition:all 0.15s}
+.lang-btn:hover{color:var(--text);border-color:#444}
+.lang-btn.active{border-color:var(--red);color:var(--red)}
+
+/* HERO */
+.hero{position:relative;min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%, rgba(180,30,30,0.12) 0%, transparent 65%),radial-gradient(ellipse at 20% 80%, rgba(200,100,30,0.06) 0%, transparent 50%);pointer-events:none}
+.hero-pin{font-size:7rem;color:var(--red);letter-spacing:0.1em;line-height:1;margin-bottom:0.5rem;text-shadow:0 0 60px rgba(224,48,48,0.4)}
+.hero-title{font-size:2.2rem;letter-spacing:0.2em;font-weight:400;margin-bottom:0.5rem;color:var(--text)}
+.hero-sub{font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:2.5rem}
+.hero-line{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--red),transparent);margin:0 auto 2.5rem}
+.hero-tagline{font-size:1.05rem;color:var(--muted);font-style:italic;max-width:500px;margin:0 auto 3rem;line-height:1.8}
+.hero-info{display:flex;gap:2.5rem;justify-content:center;font-size:0.8rem;letter-spacing:0.08em;color:var(--muted)}
+.hero-info span{display:flex;align-items:center;gap:8px}
+.hero-info span::before{content:'';display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--red)}
+
+/* SCROLL CUE */
+.scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:11px;letter-spacing:0.15em;text-transform:uppercase}
+.scroll-cue-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--muted),transparent)}
+
+/* MENU SECTION */
+.menu-wrap{max-width:1000px;margin:0 auto;padding:4rem 2rem}
+.sec-label{font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;text-align:center}
+.sec-title{font-size:2rem;letter-spacing:0.1em;font-weight:400;text-align:center;margin-bottom:0.5rem}
+.sec-rule{display:flex;align-items:center;gap:1rem;margin:1.5rem auto 2.5rem;max-width:300px}
+.sec-rule::before,.sec-rule::after{content:'';flex:1;height:1px;background:var(--border)}
+.sec-rule span{color:var(--red);font-size:1rem}
+
+/* FILTERS */
+.filters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1.5rem}
+.filter-btn{background:none;border:1px solid var(--border);padding:7px 16px;font-size:12px;cursor:pointer;border-radius:2px;color:var(--muted);font-family:inherit;letter-spacing:0.06em;transition:all 0.15s}
+.filter-btn:hover{color:var(--text);border-color:#555}
+.filter-btn.active{background:var(--red);border-color:var(--red);color:#fff}
+.filter-veg.active{background:#2a4a2a;border-color:#4a8a4a;color:#7fcf7f}
+
+.search-wrap{position:relative;max-width:380px;margin:0 auto 3rem}
+.search-wrap input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px 18px 10px 42px;font-size:14px;border-radius:2px;font-family:inherit;outline:none;letter-spacing:0.03em}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-wrap input:focus{border-color:#444}
+.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+
+/* CATEGORY LABEL */
+.cat-block{margin-bottom:3rem}
+.cat-label{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.cat-label-text{font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.cat-label-zh{font-size:1.1rem;color:var(--red);margin-right:4px}
+.cat-label-line{flex:1;height:1px;background:var(--border)}
+.cat-note{font-size:0.78rem;color:var(--muted);font-style:italic;margin:-0.5rem 0 1.5rem;padding-left:2px}
+
+/* DISH GRID */
+.dishes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border)}
+
+/* DISH CARD */
+.dish-card{background:var(--bg2);display:flex;flex-direction:column;cursor:default;transition:background 0.2s}
+.dish-card:hover{background:var(--bg3)}
+.dish-img{width:100%;aspect-ratio:4/3;background:var(--bg3);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.dish-img-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.3}
+.dish-img-placeholder .img-icon{font-size:2rem}
+.dish-img-placeholder .img-text{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+.dish-img img{width:100%;height:100%;object-fit:cover;display:block}
+.dish-img input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dish-img:hover .upload-hint{opacity:1}
+.upload-hint{position:absolute;inset:0;background:rgba(224,48,48,0.85);display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#fff;opacity:0;transition:opacity 0.2s;pointer-events:none}
+.dish-body{padding:1rem 1.1rem 1.2rem;flex:1;display:flex;flex-direction:column;gap:4px}
+.dish-num{font-size:10px;color:var(--muted);letter-spacing:0.1em;font-family:monospace}
+.dish-zh{font-size:1.1rem;color:var(--text);letter-spacing:0.05em}
+.dish-name-sec{font-size:0.78rem;color:var(--muted);font-style:italic;margin-top:-2px}
+.dish-desc{font-size:0.78rem;color:var(--muted);margin-top:4px;line-height:1.45;flex:1}
+.dish-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.dish-price{font-size:1rem;color:var(--gold);letter-spacing:0.05em}
+.dish-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.tag{font-size:9px;padding:2px 6px;border-radius:1px;letter-spacing:0.05em}
+.tag-veg{background:rgba(60,120,60,0.25);color:#7fcf7f;border:1px solid rgba(100,180,100,0.3)}
+.tag-s1{color:#e8a040;font-size:11px}
+.tag-s2{color:#e06020;font-size:11px}
+.tag-s3{color:#e03030;font-size:11px}
+.tag-allergen{background:rgba(255,255,255,0.05);color:#666;border:1px solid #333;font-size:9px}
+.hidden{display:none!important}
+
+/* ABOUT */
+.about{border-top:1px solid var(--border);padding:5rem 2rem}
+.about-inner{max-width:680px;margin:0 auto;text-align:center}
+.about-inner p{color:var(--muted);font-size:0.95rem;line-height:1.9;margin-bottom:1rem}
+.about-dishes{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
+.about-dish-pill{background:var(--bg2);border:1px solid var(--border);padding:6px 16px;font-size:0.9rem;color:var(--text);border-radius:2px;letter-spacing:0.05em}
+.about-dish-pill em{color:var(--red);font-style:normal}
+
+/* ALLERGEN */
+.allergen-section{border-top:1px solid var(--border);padding:3rem 2rem;max-width:800px;margin:0 auto}
+.allergen-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:1rem;justify-content:center}
+.allergen-item{font-size:11px;color:var(--muted);background:var(--bg2);border:1px solid var(--border);padding:5px 14px;border-radius:2px;letter-spacing:0.04em}
+.allergen-item strong{color:var(--red)}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);text-align:center;padding:3rem 2rem;color:var(--muted);font-size:0.8rem;letter-spacing:0.06em}
+footer .f-logo{font-size:1.4rem;color:var(--text);letter-spacing:0.15em;margin-bottom:0.5rem}
+footer .f-logo em{color:var(--red);font-style:normal}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">PIN<em>（品）</em>Kitchen</div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('zh')">中文</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pin">品</div>
+  <div class="hero-title">PIN Kitchen</div>
+  <div class="hero-sub" data-de="Traditionelle Chinesische Küche · Freiburg" data-en="Traditional Chinese Cuisine · Freiburg" data-zh="正宗中国菜 · 弗莱堡">Traditionelle Chinesische Küche · Freiburg</div>
+  <div class="hero-line"></div>
+  <div class="hero-tagline" data-de="Authentische Aromen aus Sichuan und Dongbei — keine Kompromisse, keine Anpassungen. Echte chinesische Küche." data-en="Authentic flavours from Sichuan and Dongbei — no compromises, no adaptations. Real Chinese cooking." data-zh="正宗川菜与东北菜——不将就，不改良，还原地道中国本味。">Authentische Aromen aus Sichuan und Dongbei — keine Kompromisse, keine Anpassungen. Echte chinesische Küche.</div>
+  <div class="hero-info">
+    <span data-de="Humboldtstraße 1, Freiburg" data-en="Humboldtstraße 1, Freiburg" data-zh="弗莱堡 Humboldtstraße 1">Humboldtstraße 1, Freiburg</span>
+    <span>0761-3196 8288</span>
+  </div>
+  <div class="scroll-cue"><div class="scroll-cue-line"></div><span data-de="Speisekarte" data-en="Menu" data-zh="菜单">Speisekarte</span></div>
+</div>
+
+<div class="menu-wrap">
+  <div class="sec-label" data-de="Unsere Küche" data-en="Our Kitchen" data-zh="我们的菜单">Unsere Küche</div>
+  <div class="sec-title" data-de="Speisekarte" data-en="Menu" data-zh="菜单">Speisekarte</div>
+  <div class="sec-rule"><span>品</span></div>
+
+  <div class="filters" id="cat-filters">
+    <button class="filter-btn active" data-cat="all" onclick="filterCat(this)" data-de="Alle" data-en="All" data-zh="全部">Alle</button>
+    <button class="filter-btn" data-cat="starters" onclick="filterCat(this)" data-de="Vorspeisen" data-en="Starters" data-zh="前菜">Vorspeisen</button>
+    <button class="filter-btn" data-cat="noodle" onclick="filterCat(this)" data-de="Nudeln & Reis" data-en="Noodles & Rice" data-zh="面条&米饭">Nudeln & Reis</button>
+    <button class="filter-btn" data-cat="bowls" onclick="filterCat(this)" data-de="Bowls" data-en="Bowls" data-zh="盖饭">Bowls</button>
+    <button class="filter-btn" data-cat="trad" onclick="filterCat(this)" data-de="Traditionell" data-en="Traditional" data-zh="传统菜">Traditionell</button>
+    <button class="filter-btn" data-cat="common" onclick="filterCat(this)" data-de="Bekannte Gerichte" data-en="Common Dishes" data-zh="常见菜">Bekannte Gerichte</button>
+    <button class="filter-btn filter-veg" data-cat="veg" onclick="filterVeg(this)" data-de="✦ Vegetarisch" data-en="✦ Vegetarian" data-zh="✦ 素食">✦ Vegetarisch</button>
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Suchen / Search / 搜索…" oninput="filterSearch()">
+  </div>
+
+  <div id="menu-container"></div>
+</div>
+
+<div class="about">
+  <div class="about-inner">
+    <div class="sec-label" style="margin-bottom:0.4rem" data-de="Über uns" data-en="About" data-zh="关于我们">Über uns</div>
+    <div class="sec-title" style="font-size:1.6rem;margin-bottom:1rem" data-de="Authentisch. Kompromisslos." data-en="Authentic. Uncompromising." data-zh="正宗。不将就。">Authentisch. Kompromisslos.</div>
+    <div class="sec-rule"><span>品</span></div>
+    <p data-de="PIN（品）Kitchen steht für das Echte. Das Schriftzeichen 品 steht für Geschmack, Charakter und Qualität — ein Versprechen, das wir mit jedem Gericht einlösen. Keine westlichen Anpassungen, keine Kompromisse." data-en="PIN（品）Kitchen stands for the real thing. The character 品 means taste, character and quality — a promise we keep with every dish. No western adaptations, no compromises." data-zh="品厨追求真实。「品」字代表品味、品格与品质——我们用每一道菜兑现这一承诺。不西化，不将就。">PIN（品）Kitchen steht für das Echte. Das Schriftzeichen 品 steht für Geschmack, Charakter und Qualität — ein Versprechen, das wir mit jedem Gericht einlösen. Keine westlichen Anpassungen, keine Kompromisse.</p>
+    <p data-de="Unsere Küche vereint die betäubend-scharfe Würze Sichuans mit den herzhaften Schmorgerichten aus dem Nordosten Chinas. Importierte Gewürze, traditionelle Techniken, echte Leidenschaft." data-en="Our kitchen unites the numbing spice of Sichuan with the hearty braised dishes of Northeast China. Imported spices, traditional techniques, real passion." data-zh="我们将四川的麻辣鲜香与东北菜的醇厚家常融为一体。进口香料，传统手法，真诚热情。">Unsere Küche vereint die betäubend-scharfe Würze Sichuans mit den herzhaften Schmorgerichten aus dem Nordosten Chinas. Importierte Gewürze, traditionelle Techniken, echte Leidenschaft.</p>
+    <div class="about-dishes">
+      <div class="about-dish-pill">麻婆豆腐 <em>Mapo Tofu</em></div>
+      <div class="about-dish-pill">辣子鸡丁 <em>Sichuan Chicken</em></div>
+      <div class="about-dish-pill">地三鲜 <em>Sauté Veggies</em></div>
+      <div class="about-dish-pill">水煮牛 <em>Spicy Beef</em></div>
+    </div>
+  </div>
+</div>
+
+<div class="allergen-section">
+  <div class="sec-label" style="text-align:center;margin-bottom:0.3rem" data-de="Allergene" data-en="Allergens" data-zh="过敏原">Allergene</div>
+  <div class="allergen-grid">
+    <div class="allergen-item"><strong>a</strong> Eier / Eggs / 蛋</div>
+    <div class="allergen-item"><strong>b</strong> Gluten / Gluten / 麸质</div>
+    <div class="allergen-item"><strong>c</strong> Erdnüsse / Peanuts / 花生</div>
+    <div class="allergen-item"><strong>d</strong> Fische / Fish / 鱼</div>
+    <div class="allergen-item"><strong>e</strong> Schalenfrüchte / Shellfish / 甲壳类</div>
+    <div class="allergen-item"><strong>f</strong> Sesam / Sesame / 芝麻</div>
+    <div class="allergen-item"><strong>g</strong> Soja / Soy / 大豆</div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo">PIN<em>（品）</em>Kitchen</div>
+  <div>Humboldtstraße 1 · 79098 Freiburg · 0761-3196 8288</div>
+</footer>
+
+<script>
+const lang={current:'de'};
+const imgStore={};
+
+const categories=[
+  {id:'starters',cat:'starters',de:'Vorspeisen',en:'Starters',zh:'前菜',dishes:[
+    {num:'37',zh:'炸春卷',de:'Vegetarische Frühlingsrolle',en:'Veggie Mini Rolls',desc:{de:'Soße nach Wahl, 10 Stück',en:'sauce of your choice, 10 pcs',zh:'自选酱汁，10只'},allergens:'b',veg:true,spice:0,price:'4.50 €'},
+    {num:'38',zh:'炸饺子',de:'Frittierte Gyoza',en:'Fried Chicken Gyoza',desc:{de:'Hühnerfleisch, Sambal Oelek, 6 Stück',en:'fried chicken, spicy sauce, 6 pcs',zh:'鸡肉馅，三巴辣酱，6只'},allergens:'b',veg:false,spice:1,price:'5.50 €'},
+    {num:'62',zh:'虾片',de:'Krabbenchips',en:'Shrimp Cracker',desc:{de:'',en:'',zh:''},allergens:'',veg:false,spice:0,price:'3.50 €'},
+  ]},
+  {id:'noodle',cat:'noodle',de:'Nudeln & Reis Box',en:'Noodle & Rice Box',zh:'面条&米饭',
+   note:{de:'Soße: süß-sauer · pikant · Erdnuss · Sojasoße',en:'Sauce: sweet sour · spicy · peanut · soy sauce',zh:'酱汁：糖醋·香辣·花生·酱油'},
+   dishes:[
+    {num:'30/36',zh:'炒面/炒饭·素',de:'Nudeln / Reis · vegetarisch',en:'Fried Noodles / Rice · veggie',desc:{de:'small / large',en:'small / large',zh:'小份 / 大份'},allergens:'a,b,g',veg:true,spice:0,price:'5.50 / 9 €'},
+    {num:'31/33',zh:'炒面/炒饭·脆皮鸡',de:'Nudeln / Reis · knuspriges Hähnchen',en:'Fried Noodles / Rice · crispy chicken',desc:{de:'small / large',en:'small / large',zh:'小份 / 大份'},allergens:'a,b,g',veg:false,spice:0,price:'7 / 11 €'},
+    {num:'32/35',zh:'炒面/炒饭·鸡肉',de:'Nudeln / Reis · gebratenes Hähnchen',en:'Fried Noodles / Rice · chicken',desc:{de:'small / large',en:'small / large',zh:'小份 / 大份'},allergens:'a,b,g',veg:false,spice:0,price:'7 / 11 €'},
+    {num:'34/39',zh:'炒面/炒饭·脆皮鸭',de:'Nudeln / Reis · knusprige Ente',en:'Fried Noodles / Rice · crispy duck',desc:{de:'small / large',en:'small / large',zh:'小份 / 大份'},allergens:'a,b,g',veg:false,spice:0,price:'7.50 / 12 €'},
+    {num:'56/57',zh:'炒面/炒饭·大虾',de:'Nudeln / Reis · Garnelen',en:'Fried Noodles / Rice · scampi',desc:{de:'nur large',en:'large only',zh:'仅大份'},allergens:'a,b,e,g',veg:false,spice:0,price:'– / 12 €'},
+    {num:'60/61',zh:'炒面/炒饭·春卷',de:'Nudeln / Reis · Frühlingsrollen',en:'Fried Noodles / Rice · mini rolls',desc:{de:'small / large',en:'small / large',zh:'小份 / 大份'},allergens:'b,g',veg:true,spice:0,price:'6.50 / 11 €'},
+  ]},
+  {id:'bowls',cat:'bowls',de:'Bowls',en:'Bowls',zh:'盖饭',
+   note:{de:'* wahlweise mit Nudelsuppe, Reisnudelsuppe oder Reis',en:'* optional with noodle soup, rice noodle soup or rice',zh:'*可选面汤、米粉汤或米饭'},
+   dishes:[
+    {num:'T1',zh:'鸡蛋牛油果炒饭',de:'Reis mit Ei und Avocado',en:'Fried Rice, Egg & Avocado',desc:{de:'',en:'',zh:''},allergens:'a,b,f,g',veg:true,spice:0,price:'11 €'},
+    {num:'T2',zh:'豆腐白菜香菇汤面',de:'Tofu, Pakchoi, Shiitake*',en:'Tofu, Pakchoi, Shiitake*',desc:{de:'auf Nudelsuppe',en:'on noodle soup',zh:'配汤面'},allergens:'b,g',veg:true,spice:0,price:'11 €'},
+    {num:'T3',zh:'番茄蛋汤面',de:'Tomate, Ei*',en:'Tomato, Egg*',desc:{de:'auf Nudelsuppe',en:'on noodle soup',zh:'配汤面'},allergens:'a,b,g',veg:true,spice:0,price:'11 €'},
+    {num:'T4',zh:'鸡肉汤面',de:'Hähnchen*',en:'Chicken*',desc:{de:'auf Nudelsuppe',en:'on noodle soup',zh:'配汤面'},allergens:'b,g',veg:false,spice:0,price:'12 €'},
+    {num:'T5',zh:'牛肉白菜汤面',de:'Rind, Tomate, Pakchoi*',en:'Beef, Tomato, Pakchoi*',desc:{de:'auf Nudelsuppe',en:'on noodle soup',zh:'配汤面'},allergens:'b,g',veg:false,spice:0,price:'14 €'},
+    {num:'T7',zh:'大虾白菜汤面',de:'Garnelen, Pakchoi*',en:'Scampi, Pakchoi*',desc:{de:'auf Nudelsuppe',en:'on noodle soup',zh:'配汤面'},allergens:'b,e,g',veg:false,spice:0,price:'14 €'},
+    {num:'T8',zh:'猪肠汤面',de:'Schweinedarm*',en:'Pig Intestine*',desc:{de:'auf Nudelsuppe',en:'on noodle soup',zh:'配汤面'},allergens:'b,g',veg:false,spice:0,price:'14 €'},
+  ]},
+  {id:'trad',cat:'trad',de:'Traditionelle Gerichte',en:'Traditional Dishes',zh:'传统菜',dishes:[
+    {num:'01',zh:'红烧猪肘',de:'Schweinshaxe in Sojasoße',en:'Pork Leg',desc:{de:'Sojasoße und Gewürzen',en:'soy sauce and spices',zh:'酱油慢炖'},allergens:'b,g',veg:false,spice:0,price:'16 €'},
+    {num:'02',zh:'水煮牛',de:'Würziges Rindfleisch',en:'Spicy Beef',desc:{de:'scharfe Brühe, Sojasprosse, Gurke',en:'spicy broth, soybean sprout, cucumber',zh:'水煮，豆芽，黄瓜'},allergens:'b,d,g',veg:false,spice:3,price:'16 €'},
+    {num:'03',zh:'水煮鱼',de:'Würziger Fisch',en:'Spicy Fish',desc:{de:'scharfe Brühe, Sojasprosse, Gurke',en:'spicy broth, soybean sprout, cucumber',zh:'水煮，豆芽，黄瓜'},allergens:'b,d,g',veg:false,spice:3,price:'15 €'},
+    {num:'03',zh:'酸菜鱼',de:'Fisch mit Sauerkraut',en:'Prickle & Fish',desc:{de:'würzige Brühe, eingelegter Kohl',en:'aromatic broth, pickled cabbage',zh:'酸菜，汤'},allergens:'b,d,g',veg:false,spice:2,price:'15 €'},
+    {num:'04',zh:'干煸芸豆',de:'Gartenbohnen',en:'Garden Bean',desc:{de:'(Schweinebauch), Knoblauch, Chili',en:'(pork), garlic, chilli',zh:'（五花肉），蒜，辣椒'},allergens:'b,g',veg:true,spice:1,price:'13 €'},
+    {num:'05',zh:'孜然羊肉',de:'Kreuzkümmel-Lamm',en:'Cumin Lamb',desc:{de:'Zwiebeln, Peperoni, Paprika',en:'cumin, onion, hot pepper',zh:'孜然，洋葱，辣椒'},allergens:'b,g',veg:false,spice:2,price:'19 €'},
+    {num:'06',zh:'干锅包菜',de:'Würziger Spitzkohl',en:'Spicy Cabbage',desc:{de:'(Schwein), Chili',en:'(pork), chilli',zh:'（猪肉），辣椒'},allergens:'b,g',veg:true,spice:2,price:'13 €'},
+    {num:'06',zh:'干锅花菜',de:'Würziger Blumenkohl',en:'Spicy Cauliflower',desc:{de:'(Schwein), Chili',en:'(pork), chilli',zh:'（猪肉），辣椒'},allergens:'b,g',veg:true,spice:2,price:'13 €'},
+    {num:'07',zh:'回锅肉',de:'Doppelt gebratener Bauch',en:'Double Roasted Pork',desc:{de:'Schweinebauch, Peperoni',en:'pork belly, hot pepper',zh:'五花肉，辣椒'},allergens:'b,g',veg:false,spice:2,price:'14 €'},
+    {num:'08',zh:'椒盐虾',de:'Salzgebratene Shrimps',en:'Salty Shrimp',desc:{de:'',en:'salty roasted',zh:'椒盐'},allergens:'b,e,g',veg:false,spice:1,price:'19 €'},
+    {num:'09',zh:'干锅肥肠',de:'Würzige Schweineinnereien',en:'Spicy Pork Giblet',desc:{de:'Chili, Lauchzwiebel',en:'chilli, spring onion',zh:'辣椒，葱'},allergens:'b,g',veg:false,spice:3,price:'16 €'},
+    {num:'10',zh:'辣子鸡丁',de:'Sichuan Chili-Hähnchen',en:'Sichuan Spicy Chicken',desc:{de:'Hähnchen, Chili, Lauchzwiebel',en:'deep-fried chicken, chilli, spring onion',zh:'辣子鸡丁，辣椒，葱'},allergens:'b,g',veg:false,spice:3,price:'14 €'},
+    {num:'11',zh:'尖椒牛柳',de:'Rindfleisch mit Peperoni',en:'Beef with Pepper',desc:{de:'Streifen, Peperoni, Zwiebel',en:'beef, hot pepper, onion',zh:'牛柳，辣椒，洋葱'},allergens:'b,g',veg:false,spice:2,price:'17 €'},
+    {num:'12',zh:'红烧茄子',de:'Aubergine Bohnenpaste',en:'Garlic Eggplant',desc:{de:'(Schweinebauch), Bohnenpaste',en:'eggplant, (pork belly), bean paste',zh:'茄子，（五花肉），豆瓣酱'},allergens:'b,g',veg:true,spice:2,price:'13 €'},
+    {num:'13',zh:'口水鸡',de:'Kaltes Hähnchen',en:'Chicken Spicy (cold)',desc:{de:'sauer-scharfe Soße, kalt',en:'aromatic sauce, cold',zh:'口水鸡（凉）'},allergens:'b,g',veg:false,spice:2,price:'12 €'},
+    {num:'14',zh:'麻婆豆腐',de:'Mapo-Tofu',en:'Mapo Tofu',desc:{de:'Tofu, (Rinderhack), Chiliöl — Sichuan',en:'tofu, (beef mince), chilli oil — Sichuan',zh:'四川麻婆豆腐，（牛肉末），辣椒油'},allergens:'b,g',veg:true,spice:3,price:'13 €'},
+    {num:'144',zh:'素菜豆腐',de:'Tofu mit Gemüse',en:'Tofu & Veggies',desc:{de:'',en:'tofu with seasonal vegetables',zh:'素菜豆腐'},allergens:'b,g',veg:true,spice:0,price:'13 €'},
+    {num:'15',zh:'毛家红烧肉',de:'Roter Schweinebauch',en:'Spiced Pork Belly',desc:{de:'Sojasoße, rot geschmort',en:'red cooked in soy sauce',zh:'毛家红烧肉'},allergens:'b,g',veg:false,spice:0,price:'16 €'},
+    {num:'16',zh:'番茄鱼',de:'Fisch in Tomatenbrühe',en:'Tomato Fish',desc:{de:'',en:'fish in tomato broth',zh:'番茄鱼汤'},allergens:'d',veg:false,spice:0,price:'16 €'},
+    {num:'17',zh:'龙井虾仁',de:'Garnelen mit Teeblättern',en:'Tea Leave Shrimp',desc:{de:'',en:'shrimp with tea leaves',zh:'龙井虾仁'},allergens:'b,e',veg:false,spice:0,price:'18 €'},
+    {num:'18',zh:'青菜香菇',de:'Pakchoi mit Shiitake',en:'Pakchoi Shiitake',desc:{de:'',en:'pakchoi with shiitake',zh:'青菜香菇'},allergens:'b,g',veg:true,spice:0,price:'12 €'},
+    {num:'70',zh:'酸辣土豆丝',de:'Sauer-scharfe Kartoffelstreifen',en:'Potato Slices',desc:{de:'sauer-scharf',en:'sour spicy stir-fried',zh:'酸辣土豆丝'},allergens:'',veg:true,spice:2,price:'11 €'},
+    {num:'71',zh:'地三鲜',de:'Sautiertes Gemüse',en:'Sauté Veggies',desc:{de:'Kartoffeln, Paprika, Aubergine',en:'potato, green pepper, eggplant',zh:'土豆、青椒、茄子'},allergens:'b,g',veg:true,spice:0,price:'12 €'},
+    {num:'72',zh:'黄焖鸡',de:'Geschmortes Hähnchen',en:'Soft Braised Chicken',desc:{de:'Knochen, Shiitake, Kartoffel, Peperoni',en:'bones, shiitake, potato, hot pepper',zh:'黄焖鸡，香菇，土豆，辣椒'},allergens:'b,g',veg:false,spice:1,price:'14 €'},
+    {num:'75',zh:'爆炒猪肚',de:'Schweinekutteln',en:'Pork Tripes',desc:{de:'Peperoni, Zwiebeln',en:'hot pepper, onion',zh:'辣椒，洋葱'},allergens:'b,g',veg:false,spice:2,price:'16 €'},
+    {num:'76',zh:'红烧猪脚',de:'Schweinefuß',en:'Pork Trotter',desc:{de:'würzige rote Sojasoße',en:'aromatic deep-red soy sauce',zh:'红烧猪脚'},allergens:'b,g',veg:false,spice:0,price:'14 €'},
+    {num:'77',zh:'卤水猪耳',de:'Schweineohren (kalt)',en:'Pork Ears (cold)',desc:{de:'',en:'simmered pork ears, cold',zh:'卤水猪耳（凉）'},allergens:'b,g',veg:false,spice:1,price:'14 €'},
+    {num:'78',zh:'溜肝尖',de:'Schnell gebratene Leber',en:'Pork Liver',desc:{de:'Knoblauch, Peperoni',en:'garlic, hot pepper',zh:'溜肝尖，蒜，辣椒'},allergens:'b,g',veg:false,spice:2,price:'14 €'},
+    {num:'79',zh:'蒜苔肉片',de:'Schweinefleisch Knoblauchsprossen',en:'Garlic Scape Pork',desc:{de:'',en:'pork slices with garlic scapes',zh:'蒜苔肉片'},allergens:'b,g',veg:false,spice:1,price:'16 €'},
+    {num:'80',zh:'炒米粉',de:'Reisnudeln mit Gemüse',en:'Rice Noodle',desc:{de:'gebraten',en:'stir-fried with veggies',zh:'炒米粉'},allergens:'b,g',veg:true,spice:0,price:'12 €'},
+    {num:'82',zh:'茄角之恋',de:'Aubergine & Stangenbohnen',en:'Eggplant & String Bean',desc:{de:'(Schweinebauch)',en:'(pork belly)',zh:'（五花肉）'},allergens:'b,g',veg:true,spice:1,price:'13 €'},
+    {num:'83',zh:'酸辣藕片',de:'Lotuswurzeln sauer-scharf',en:'Lotus Root',desc:{de:'sauer-scharf',en:'sour spicy',zh:'酸辣藕片'},allergens:'',veg:true,spice:2,price:'13 €'},
+    {num:'84',zh:'蒜香排骨',de:'Knoblauch-Spareribs',en:'Garlic Spare Rib',desc:{de:'frittiert',en:'deep-fried with garlic',zh:'蒜香排骨'},allergens:'b,g',veg:false,spice:0,price:'17 €'},
+    {num:'85',zh:'红烧带鱼',de:'Degenfisch in Sojasoße',en:'Black Scabbardfish',desc:{de:'',en:'with soy sauce',zh:'红烧带鱼'},allergens:'b,d,g',veg:false,spice:1,price:'16 €'},
+    {num:'86',zh:'干煸鱿鱼',de:'Tintenfisch mit Chili',en:'Chili Cuttlefish',desc:{de:'',en:'cuttlefish with chilli',zh:'干煸鱿鱼，辣椒'},allergens:'b,d,g',veg:false,spice:3,price:'16 €'},
+    {num:'87',zh:'锅包肉',de:'Süß-saures Schweinefleisch',en:'Pork Sweet Sour',desc:{de:'frittiert, süß-sauer',en:'deep-fried, sweet sour',zh:'锅包肉，糖醋'},allergens:'b,g',veg:false,spice:0,price:'16 €'},
+    {num:'88',zh:'干锅杏鲍菇',de:'Kräuterseitlinge',en:'King Oyster Mushroom',desc:{de:'(Schweinebauch), Gemüse',en:'(pork belly), veggies',zh:'（五花肉），蔬菜'},allergens:'b,g',veg:true,spice:1,price:'16 €'},
+    {num:'89',zh:'蒜蓉娃娃菜',de:'Mini-Chinakohl Knoblauch',en:'Mini Cabbage',desc:{de:'',en:'with garlic',zh:'蒜蓉'},allergens:'b,g',veg:true,spice:0,price:'12 €'},
+    {num:'90',zh:'爆炒牛百叶',de:'Rindermagen',en:'Beef Stomach',desc:{de:'Peperoni, Knoblauch',en:'hot pepper, garlic',zh:'辣椒，蒜'},allergens:'b,g',veg:false,spice:2,price:'16 €'},
+    {num:'91',zh:'麻辣香锅',de:'Würziger Topf',en:'Spicy Pot',desc:{de:'Garnelen, Rind, Lotuswurzel, Sichuan-Pfeffer',en:'scampi, beef, lotus root, Sichuan pepper',zh:'大虾、牛肉、莲藕、花椒'},allergens:'b,e,f,g',veg:false,spice:3,price:'16 €'},
+    {num:'92',zh:'孜然小酥肉',de:'Kreuzkümmel-Schweinebauch',en:'Cumin Pork',desc:{de:'frittiert, Peperoni',en:'fried, hot pepper, cumin',zh:'孜然，辣椒'},allergens:'b,f,g',veg:false,spice:2,price:'16 €'},
+    {num:'93',zh:'牛腩煲',de:'Geschmortes Rindfleisch',en:'Soft Beef & Potato',desc:{de:'Kartoffeln, Paprika, Zwiebel',en:'potato, pepper, onion',zh:'土豆，辣椒，洋葱'},allergens:'b,f,g',veg:false,spice:0,price:'18 €'},
+    {num:'94',zh:'酸汤牛肉',de:'Rindfleisch sauer-scharf',en:'Beef Spicy Sour',desc:{de:'Salzgemüse, Nadelpilz, Glasnudeln',en:'pickled cabbage, enoki mushroom, glass noodle',zh:'泡菜，金针菇，粉丝'},allergens:'b,g',veg:false,spice:2,price:'17 €'},
+    {num:'95',zh:'麻辣牛肉片',de:'Sichuan Rindfleisch (kalt)',en:'Szechuan Beef (cold)',desc:{de:'Sichuan-Pfeffer, Gurken, Sesamöl',en:'cucumber, sesame oil, Sichuan pepper',zh:'黄瓜，芝麻油，花椒（凉）'},allergens:'f,g',veg:false,spice:3,price:'17 €'},
+    {num:'110',zh:'猪舌',de:'Schweinezunge (kalt)',en:'Pork Tongue (cold)',desc:{de:'würzig-scharfe Soße',en:'spicy sauce, cold',zh:'香辣酱（凉）'},allergens:'b,g',veg:false,spice:2,price:'12 €'},
+    {num:'111',zh:'爆炒腰花',de:'Schweinenieren',en:'Pork Kidney',desc:{de:'Pepperoni, Lauchzwiebeln',en:'hot pepper, spring onion',zh:'辣椒，葱'},allergens:'b,g',veg:false,spice:3,price:'17 €'},
+  ]},
+  {id:'common',cat:'common',de:'Bekannte Gerichte',en:'Common Dishes',zh:'常见菜',dishes:[
+    {num:'41',zh:'杂水鸡',de:'Chop Suey Hähnchen',en:'Chop Suey Chicken',desc:{de:'Paprika, Karotten, Pakchoi',en:'stir-fried chicken, shiitake, soybean sprout',zh:'青椒，胡萝卜，白菜'},allergens:'b,g',veg:false,spice:0,price:'12 €'},
+    {num:'42',zh:'洋葱牛',de:'Rindfleisch mit Zwiebeln',en:'Onion Beef',desc:{de:'würzig gebraten',en:'stir-fried with onions',zh:'洋葱炒牛肉'},allergens:'b,g',veg:false,spice:1,price:'14 €'},
+    {num:'43',zh:'宫保鸡/牛/鸭',de:'Gong Bao · Huhn / Rind / Ente',en:'Gong Bao · Chicken / Beef / Duck',desc:{de:'Paprika, Erdnuss',en:'sweet pepper, peanut',zh:'青椒，花生'},allergens:'b,c,g',veg:false,spice:2,price:'12 / 15 / 14.50 €'},
+    {num:'44',zh:'炸鸡',de:'Knuspriges Hähnchen',en:'Crispy Chicken',desc:{de:'auf Paprika, Karotten, Pakchoi',en:'on stir-fried pepper, carrot, pakchoi',zh:'炸鸡，青椒，胡萝卜，白菜'},allergens:'b,g',veg:false,spice:0,price:'13 €'},
+    {num:'45',zh:'炸鸭',de:'Knusprige Ente',en:'Crispy Duck',desc:{de:'auf Paprika, Karotten, Pakchoi',en:'on stir-fried pepper, carrot, pakchoi',zh:'炸鸭，青椒，胡萝卜，白菜'},allergens:'b,g',veg:false,spice:0,price:'14.50 €'},
+    {num:'47',zh:'八宝鸭',de:'Eight Treasure Duck',en:'Eight Treasure Duck',desc:{de:'Garnelen, Rind, Hähnchen & Ente',en:'shrimp, beef, chicken, bean paste, crispy duck',zh:'大虾、牛肉、鸡肉、豆瓣酱，脆皮鸭'},allergens:'b,e,g',veg:false,spice:1,price:'18.50 €'},
+    {num:'48',zh:'八宝辣酱',de:'Eight Treasure',en:'Eight Treasure',desc:{de:'Garnelen, Rind, Hähnchen, Paprika',en:'shrimp, beef, chicken, sweet pepper, bean paste',zh:'大虾、牛肉、鸡肉、青椒'},allergens:'b,e,g',veg:false,spice:2,price:'14 €'},
+    {num:'49',zh:'鸳鸯戏水',de:'Hähnchen & Ente',en:'Chicken & Duck',desc:{de:'Paprika, Pakchoi, Gartenbohnen',en:'sweet pepper, carrot, pakchoi',zh:'青椒，白菜，芸豆'},allergens:'b,g',veg:false,spice:1,price:'14.50 €'},
+    {num:'50',zh:'炒蔬菜',de:'Gebratenes Gemüse',en:'Stir-fried Veggies',desc:{de:'Paprika, Karotten, Pakchoi, Bohnen',en:'stir-fried veggies',zh:'青椒、胡萝卜、白菜、芸豆'},allergens:'b,g',veg:true,spice:0,price:'11 €'},
+  ]}
+];
+
+let activeCat='all',vegOnly=false,searchQ='';
+
+function cardId(cat,idx){return cat+'_'+idx;}
+
+function spice(n){
+  if(!n)return '';
+  return `<span class="tag tag-s${n}">${'🌶'.repeat(n)}</span>`;
+}
+
+function renderMenu(){
+  const c=document.getElementById('menu-container');
+  const l=lang.current;
+  let html='';
+  categories.forEach(cat=>{
+    const filtered=cat.dishes.filter(d=>{
+      if(activeCat!=='all'&&activeCat!=='veg'&&activeCat!==cat.cat)return false;
+      if(activeCat==='veg'&&!d.veg)return false;
+      if(vegOnly&&!d.veg)return false;
+      if(searchQ){
+        const q=searchQ.toLowerCase();
+        if(!(d.zh.includes(searchQ)||d.de.toLowerCase().includes(q)||d.en.toLowerCase().includes(q)))return false;
+      }
+      return true;
+    });
+    if(!filtered.length)return;
+    html+=`<div class="cat-block">
+      <div class="cat-label"><span class="cat-label-zh">${cat.zh}</span><span class="cat-label-text">${cat[l]||cat.de}</span><div class="cat-label-line"></div></div>
+      ${cat.note?`<div class="cat-note">${cat.note[l]||cat.note.de}</div>`:''}
+      <div class="dishes-grid">`;
+    filtered.forEach((d,i)=>{
+      const id=cardId(cat.id,cat.dishes.indexOf(d));
+      const imgSrc=imgStore[id]||'';
+      const desc=d.desc[l]||d.desc.de||'';
+      const vegT=d.veg?`<span class="tag tag-veg">${l==='zh'?'素食':'Veg'}</span>`:'';
+      const algT=d.allergens?`<span class="tag tag-allergen">${d.allergens}</span>`:'';
+      html+=`<div class="dish-card">
+        <div class="dish-img" onclick="triggerUpload('${id}')">
+          ${imgSrc?`<img src="${imgSrc}" alt="${d.zh}">`:`<div class="dish-img-placeholder"><div class="img-icon">⊕</div><div class="img-text">${l==='de'?'Foto hinzufügen':l==='en'?'Add photo':'添加照片'}</div></div>`}
+          <div class="upload-hint">${l==='de'?'Foto hochladen':l==='en'?'Upload photo':'上传照片'}</div>
+          <input type="file" accept="image/*" id="file_${id}" style="display:none" onchange="handleUpload(event,'${id}')">
+        </div>
+        <div class="dish-body">
+          <div class="dish-num">${d.num}</div>
+          <div class="dish-zh">${d.zh}</div>
+          <div class="dish-name-sec">${l==='de'?d.en:l==='en'?d.de:d.en}</div>
+          ${desc?`<div class="dish-desc">${desc}</div>`:''}
+          <div class="dish-footer">
+            <div class="dish-price">${d.price}</div>
+            <div class="dish-tags">${vegT}${spice(d.spice)}${algT}</div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+  if(!html)html=`<p style="text-align:center;color:var(--muted);padding:3rem">${l==='de'?'Keine Gerichte gefunden.':l==='en'?'No dishes found.':'未找到菜品。'}</p>`;
+  c.innerHTML=html;
+}
+
+function triggerUpload(id){
+  const f=document.getElementById('file_'+id);
+  if(f)f.click();
+}
+
+function handleUpload(e,id){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    imgStore[id]=ev.target.result;
+    renderMenu();
+  };
+  reader.readAsDataURL(file);
+}
+
+function filterCat(btn){
+  document.querySelectorAll('#cat-filters .filter-btn:not(.filter-veg)').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat=btn.dataset.cat;
+  renderMenu();
+}
+
+function filterVeg(btn){
+  vegOnly=!vegOnly;
+  btn.classList.toggle('active',vegOnly);
+  if(vegOnly){document.querySelectorAll('#cat-filters .filter-btn:not(.filter-veg)').forEach(b=>b.classList.remove('active'));document.querySelector('[data-cat="all"]').classList.add('active');activeCat='all';}
+  renderMenu();
+}
+
+function filterSearch(){searchQ=document.getElementById('search').value;renderMenu();}
+
+function setLang(l){
+  lang.current=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent==='DE'&&l==='de'||b.textContent==='EN'&&l==='en'||b.textContent==='中文'&&l==='zh'));
+  document.querySelectorAll('[data-'+l+']').forEach(el=>{el.textContent=el.dataset[l];});
+  document.querySelectorAll('#cat-filters .filter-btn').forEach(btn=>{if(btn.dataset[l])btn.textContent=btn.dataset[l];});
+  document.getElementById('search').placeholder=l==='de'?'Suchen…':l==='en'?'Search…':'搜索…';
+  renderMenu();
+}
+
+renderMenu();
+</script>
+</body>
+</html>
